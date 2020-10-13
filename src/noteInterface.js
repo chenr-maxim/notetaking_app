@@ -36,6 +36,8 @@ class NoteInterface extends React.Component {
         notes.push(this.state);
         localStorage.setItem('notes', JSON.stringify(notes));
         this.forceUpdate();
+        emptyFlag = false;
+        console.log(localStorage);
     }
 
     deleteNote = () => {
@@ -62,8 +64,6 @@ class NoteInterface extends React.Component {
                 if(this.state.noteTitle.trim() !== '') {
                     console.log('notes is empty');
                     this.updateNotes();
-                    emptyFlag = false;
-                    console.log(localStorage);
                     return;
                 }
                 else {
@@ -84,8 +84,6 @@ class NoteInterface extends React.Component {
                     } 
                 }
                 this.updateNotes();
-                emptyFlag = false;
-                console.log(localStorage);
             }
         } else {
             alert('enter a title to save the note!');
@@ -127,13 +125,10 @@ class NoteInterface extends React.Component {
         return (
             <div className="noteContainer">
                 <div className="savedNotes">
-                    {/* <select name="savedNotes" onChange={this.handleSelectOptions} > 
-                        { (!emptyFlag) ? notes.map((note, i) => {return <option key={i}> {note.noteTitle} </option>}) : false}
-                    </select> */}
                     { (!emptyFlag) ? notes.map((note, i) => {return <div onClick={this.changeNote} className="individualNote" key={i}> {note.noteTitle} </div>}) : false}
                     <button className="createNoteButton" onClick={this.createNote}> + Note </button> 
                     <button onClick={this.clearNotes}> Clear Notes </button>
-                    <button onClick={this.checkState}> check state </button>
+                    {/* <button onClick={this.checkState}> check state </button> */}
                 </div>
                 <div className="noteEditor">
                     <input type="text" placeholder="Enter a Title" value={this.state.noteTitle} className="noteTitle" name="noteTitle" onChange={this.handleChange} />
