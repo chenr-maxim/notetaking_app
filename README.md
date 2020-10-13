@@ -1,3 +1,7 @@
+## Simple Notetaking App
+
+Simple notetaking app that was created using React and utilizes local storage to save and retrieve notes. Still a work in progress, with the css and html.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
