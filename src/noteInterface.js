@@ -15,7 +15,6 @@ class NoteInterface extends React.Component {
 
     componentDidMount() {
         this.fetchNotes();
-        console.log('finished did mount');
     }
 
     handleChange = (event) => {
@@ -23,7 +22,6 @@ class NoteInterface extends React.Component {
     }
 
     changeNote = (event) => {
-        console.log(event.target.innerText);
         for(let i = 0; i < notes.length; i++) {
             if(notes[i].noteTitle === event.target.innerText) {
                 this.setState({noteTitle: notes[i].noteTitle, noteContent: notes[i].noteContent});
@@ -37,14 +35,10 @@ class NoteInterface extends React.Component {
         localStorage.setItem('notes', JSON.stringify(notes));
         this.forceUpdate();
         emptyFlag = false;
-        console.log(localStorage);
     }
 
     deleteNote = () => {
-        console.log('delete note');
         const noteTitle = this.state.noteTitle;
-        console.log(noteTitle);
-        console.log(notes);
         for(let i = 0; i < notes.length; i++) {
             if( notes[i].noteTitle === noteTitle) {
                 notes.splice(i,1);
@@ -62,7 +56,6 @@ class NoteInterface extends React.Component {
             //base case
             if(notes.length === 0) {
                 if(this.state.noteTitle.trim() !== '') {
-                    console.log('notes is empty');
                     this.updateNotes();
                     return;
                 }
@@ -74,11 +67,8 @@ class NoteInterface extends React.Component {
             //notes !=== length 0
             //notes is not empty
             if(notes.length !== 0) {
-                console.log('notes is not empty');
-                console.log(notes);
                 for(let i = 0; i < notes.length; i++) {
                     if(notes[i].noteTitle === this.state.noteTitle.trim()) {
-                        console.log('editing note');
                         notes.splice(i, 1);
                         break;
                     } 
@@ -101,10 +91,10 @@ class NoteInterface extends React.Component {
             notes = parsedNotes;
             this.setState({noteTitle: notes[0].noteTitle, noteContent: notes[0].noteContent});
             emptyFlag = false;
-            console.log('componentDidMount Notes exist in localStorage');
-            console.log(parsedNotes);
-            console.log('what is stored in localstorage?');
-            console.log(localStorage);
+            // console.log('componentDidMount Notes exist in localStorage');
+            // console.log(parsedNotes);
+            // console.log('what is stored in localstorage?');
+            // console.log(localStorage);
         } else {
             console.log('empty localstorage');
         }
