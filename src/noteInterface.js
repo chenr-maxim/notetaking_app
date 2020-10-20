@@ -114,12 +114,38 @@ class NoteInterface extends React.Component {
     render() {
         return (
             <div className="noteContainer">
-                <div className="savedNotes">
-                    { (!emptyFlag) ? notes.map((note, i) => {return <div onClick={this.changeNote} className="individualNote" key={i}> {note.noteTitle} </div>}) : false}
-                    <button className="createNoteButton" onClick={this.createNote}> + Note </button> 
-                    <button onClick={this.clearNotes}> Clear Notes </button>
-                    {/* <button onClick={this.checkState}> check state </button> */}
+                <div className="notesTab"> 
+                    <div className="searchBarContainer">
+                        <span class="magnifyingGlass">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+                            <g id="Search" transform="translate(3)">
+                                <rect id="Rectangle_693" data-name="Rectangle 693" fill="none"/>
+                                <path id="Path_208" data-name="Path 208" d="M12,10.943,9.509,8.453a5.167,5.167,0,0,0,1.057-3.17A5.251,5.251,0,0,0,5.283,0,5.251,5.251,0,0,0,0,5.283a5.251,5.251,0,0,0,5.283,5.283,5.167,5.167,0,0,0,3.17-1.057L10.943,12ZM1.509,5.283A3.737,3.737,0,0,1,5.283,1.509,3.737,3.737,0,0,1,9.057,5.283,3.737,3.737,0,0,1,5.283,9.057,3.737,3.737,0,0,1,1.509,5.283Z" transform="translate(-3)" fill="#2699fb"/>
+                            </g>
+                            </svg>
+                        </span>
+                        <input type="text" className="searchBar"></input>
+                    </div>
+                    <button className="createNoteButton" onClick={this.createNote}> 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+                            <g id="Group_242" data-name="Group 242" transform="translate(1.357 0.404)">
+                            <g id="Group_220" data-name="Group 220" transform="translate(-1.357)">
+                            <g id="Add">
+                                <path id="Union_1" data-name="Union 1" d="M5.375,11V6.188H0V4.812H5.375V0h1.25V4.812H12V6.188H6.625V11Z" transform="translate(0 -0.404)" fill="#2699fb"/>
+                            </g>
+                            </g>
+                        </g>
+                        </svg>
+                    </button>
+                    <hr class="solid"></hr>
+                    <div className="savedNotes">
+                        { (!emptyFlag) ? notes.map((note, i) => {return <div onClick={this.changeNote} className="individualNote" key={i}> {note.noteTitle} </div>}) : false}
+                        <button onClick={this.clearNotes}> Clear Notes </button>
+                        {/* <button onClick={this.checkState}> check state </button> */}
+                    </div>
                 </div>
+
+
                 <div className="noteEditor">
                     <input type="text" placeholder="Enter a Title" value={this.state.noteTitle} className="noteTitle" name="noteTitle" onChange={this.handleChange} />
                     <button onClick={this.saveNote}> Save Note </button>

@@ -12,6 +12,12 @@ code {
     monospace;
 }
 
+hr.solid {
+  margin-top: 0px;
+  margin-bottom: 20px;
+  width: 164px;
+}
+
 /* ::-webkit-scrollbar {
   background: transparent;
 } */
@@ -20,11 +26,17 @@ code {
   display: grid;
   border-style: solid;
   border-width: 1px;
-  grid-template-columns: 200px auto;
+  grid-template-columns: 195px auto;
   height: 75vh;
   width: 1500px;
   margin-left: 50px;
   margin-top: 50px;
+}
+
+.notesTab {
+  border-width: 1px;
+  border-style: solid;
+  background-color: #EDEDED;
 }
 
 .noteEditor {
@@ -49,15 +61,45 @@ textarea {
   border-style: none;
 }
 
-.createNoteButton {
+.searchBarContainer {
+  margin-top: 27px;
+  margin-left: 15px;
+  margin-bottom: 11px;
+  display: inline-block;
+}
+
+.magnifyingGlass {
   position: absolute;
-  top: 700px;
-  left: 120px;
+  left: 170px;
+  top: 83px;
+}
+
+.searchBar {
+  border-style: none;
+  width: 125px;
+  height: 25px;
+  border-radius: 10px;
+}
+
+.searchBar:focus {
+  outline:none;
+}
+
+.createNoteButton {
+  margin-left: 14px;
+  border-style: none;
+  border-radius: 8px;
+  width: 23px;
+  height: 23px;
+  background-color: #FFFFFF;
+}
+
+.createNoteButton svg {
+
 }
 
 .savedNotes {
-  border-style: solid;
-  border-width: 0px 1px 0px 0px;
+
 }
 
 .individualNote {
