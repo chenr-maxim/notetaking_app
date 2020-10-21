@@ -37,6 +37,8 @@ hr.solid {
   border-width: 1px;
   border-style: solid;
   background-color: #EDEDED;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .noteEditor {
@@ -63,15 +65,14 @@ textarea {
 
 .searchBarContainer {
   margin-top: 27px;
-  margin-left: 15px;
   margin-bottom: 11px;
   display: inline-block;
 }
 
 .magnifyingGlass {
-  position: absolute;
-  left: 170px;
-  top: 83px;
+  position: relative;
+  top: 3px;
+  left: 120px;
 }
 
 .searchBar {
@@ -86,7 +87,7 @@ textarea {
 }
 
 .createNoteButton {
-  margin-left: 14px;
+  margin-left: 16px;
   border-style: none;
   border-radius: 8px;
   width: 23px;
@@ -94,15 +95,50 @@ textarea {
   background-color: #FFFFFF;
 }
 
-.createNoteButton svg {
-
-}
-
 .savedNotes {
-
 }
 
 .individualNote {
+  overflow: hidden;
   border-style: solid;
-  border-width: 1px 0px 1px 0px;
+  border-radius: 8px;
+  border-width: 1px;
+  width: 165px; 
+  margin-left: 13px;
+  margin-bottom: 14px;
+  cursor: default;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.individualNote:active{
+  border: 2px solid black;
+  background-color: #3E3E3E;
+}
+
+.individualNoteTitle {
+  overflow: hidden;
+  margin-top: 25px;
+  margin-left: 15px;
+  font-size: 19px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.individualNoteTitle:active {
+  color: #FFFFFF;
+}
+
+.individualNoteContent {
+  overflow: hidden;
+  margin-top: 5px;
+  margin-left: 15px;
+  padding-bottom: 15px;
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.individualNoteContent:active {
+  color: #FFFFFF;
 }

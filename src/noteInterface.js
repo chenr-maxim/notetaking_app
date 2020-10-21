@@ -23,7 +23,9 @@ class NoteInterface extends React.Component {
 
     changeNote = (event) => {
         for(let i = 0; i < notes.length; i++) {
-            if(notes[i].noteTitle === event.target.innerText) {
+                if(notes[i].noteTitle === event.target.innerText || 
+                    notes[i].noteContent === event.target.innerText || 
+                    event.target.hasAttribute(notes[i].key)) {
                 this.setState({noteTitle: notes[i].noteTitle, noteContent: notes[i].noteContent});
                 break;
             }
@@ -116,7 +118,7 @@ class NoteInterface extends React.Component {
             <div className="noteContainer">
                 <div className="notesTab"> 
                     <div className="searchBarContainer">
-                        <span class="magnifyingGlass">
+                        <span className="magnifyingGlass">
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
                             <g id="Search" transform="translate(3)">
                                 <rect id="Rectangle_693" data-name="Rectangle 693" fill="none"/>
@@ -137,9 +139,17 @@ class NoteInterface extends React.Component {
                         </g>
                         </svg>
                     </button>
-                    <hr class="solid"></hr>
+                    <hr className="solid"></hr>
                     <div className="savedNotes">
-                        { (!emptyFlag) ? notes.map((note, i) => {return <div onClick={this.changeNote} className="individualNote" key={i}> {note.noteTitle} </div>}) : false}
+                        { (!emptyFlag) ? notes.map((note, i) => {
+                            return <div onClick={this.changeNote} id={i} className="individualNote" key={i}> 
+                                <div className="individualNoteTitle">
+                                    {note.noteTitle}
+                                </div>
+                                <div className="individualNoteContent">
+                                    {note.noteContent}
+                                </div>
+                            </div>}) : false}
                         <button onClick={this.clearNotes}> Clear Notes </button>
                         {/* <button onClick={this.checkState}> check state </button> */}
                     </div>
