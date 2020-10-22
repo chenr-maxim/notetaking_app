@@ -18,14 +18,8 @@ hr.solid {
   width: 164px;
 }
 
-/* ::-webkit-scrollbar {
-  background: transparent;
-} */
-
 .noteContainer {
   display: grid;
-  border-style: solid;
-  border-width: 1px;
   grid-template-columns: 195px auto;
   height: 75vh;
   width: 1500px;
@@ -34,8 +28,6 @@ hr.solid {
 }
 
 .notesTab {
-  border-width: 1px;
-  border-style: solid;
   background-color: #EDEDED;
   overflow-y: auto;
   overflow-x: hidden;
@@ -43,6 +35,9 @@ hr.solid {
 
 .noteEditor {
   display: block;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #e3e3e3; 
 }
 
 textarea {
@@ -69,12 +64,6 @@ textarea {
   display: inline-block;
 }
 
-.magnifyingGlass {
-  position: relative;
-  top: 3px;
-  left: 120px;
-}
-
 .searchBar {
   border-style: none;
   width: 125px;
@@ -86,7 +75,7 @@ textarea {
   outline:none;
 }
 
-.createNoteButton {
+.createIcon {
   margin-left: 16px;
   border-style: none;
   border-radius: 8px;
@@ -95,7 +84,15 @@ textarea {
   background-color: #FFFFFF;
 }
 
-.savedNotes {
+.deleteIcon {
+  border: none;
+  /* background: none; */
+}
+
+.magnifyingGlass {
+  position: relative;
+  top: 2px;
+  left: 120px;
 }
 
 .individualNote {
@@ -140,5 +137,9 @@ textarea {
 }
 
 .individualNoteContent:active {
+  color: #FFFFFF;
+}
+
+.individualNote:active .noteTitle, .individualNote:active .noteContent {
   color: #FFFFFF;
 }
