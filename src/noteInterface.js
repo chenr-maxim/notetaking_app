@@ -45,12 +45,16 @@ class NoteInterface extends React.Component {
         const noteTitle = this.state.noteTitle;
         for(let i = 0; i < notes.length; i++) {
             if( notes[i].noteTitle === noteTitle) {
+                if(notes.length === 1) {
+                    notes.splice(i,1);
+                    this.setState({noteTitle: '', noteContent: ''});
+                    break;
+                }
+                this.setState({noteTitle: notes[i+1].noteTitle, noteContent: notes[i+1].noteContent});
                 notes.splice(i,1);
-                this.setState({noteTitle: '', noteContent: ''});
             }
         }
         localStorage.setItem('notes', JSON.stringify(notes));
-
     }
 
     saveNote = () => {
@@ -108,6 +112,10 @@ class NoteInterface extends React.Component {
         });
     }
 
+    checkState = () => {
+        console.log(this.state);
+    }
+
     clearNotes = () => {
         localStorage.clear();
         notes = [];
@@ -155,12 +163,13 @@ class NoteInterface extends React.Component {
                                 </div>
                             </div>}) : false}
                     </div>
-                    <button onClick={this.clearNotes}> Clear Notes </button>
+                    {/* <button onClick={this.clearNotes}> Clear Notes </button> */}
+                    <button onClick={this.checkState}> Check State </button>
                 </div>
 
 
                 <div className="noteEditor">
-                    <input type="text" placeholder="Enter a Title" value={this.state.noteTitle} className="noteTitle" name="noteTitle" onChange={this.handleChange} />
+                    <input type="text" placeholder="Enter a Title" value={this.state.noteTitle || ""} className="noteTitle" name="noteTitle" onChange={this.handleChange} />
                     <button onClick={this.saveNote}> Save Note </button>
                     <button className="deleteIcon" onClick={this.deleteNote}>
                         <svg id="trash" xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 19 19">
@@ -169,7 +178,7 @@ class NoteInterface extends React.Component {
                         <path id="Path_1349" data-name="Path 1349" d="M13,9h2v8H13Z" transform="translate(-3 -2)" fill="#2699fb"/>
                         </svg>
                     </button>
-                    <textarea autoFocus name="noteContent" value={this.state.noteContent} placeholder="Start typing here!"  rows="20" cols="50" required onChange={this.handleChange} ></textarea> 
+                    <textarea autoFocus name="noteContent" value={this.state.noteContent || ""} placeholder="Start typing here!"  rows="20" cols="50" required onChange={this.handleChange} ></textarea> 
                 </div>          
             </div>
             
