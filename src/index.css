@@ -41,6 +41,7 @@ hr.solid {
 }
 
 textarea {
+  font-family: 'Helvetica Neue';
   margin-left: 155px;
   margin-top: 50px;
   padding-right: 130px; 
@@ -86,7 +87,7 @@ textarea {
 
 .deleteIcon {
   border: none;
-  /* background: none; */
+  background: none;
 }
 
 .magnifyingGlass {
@@ -97,7 +98,6 @@ textarea {
 
 .individualNote {
   overflow: hidden;
-  border-style: solid;
   border-radius: 8px;
   border-width: 1px;
   width: 165px; 
@@ -106,24 +106,28 @@ textarea {
   cursor: default;
   white-space: nowrap;
   text-overflow: ellipsis;
+  color: #2699FB;
+  background: #FFFFFF
 }
 
-.individualNote:active{
-  border: 2px solid black;
+.timeStamp {
+  margin-top: 10px;
+  margin-left: 15px;
+  font-size: 12px;
+}
+
+.activeNote {
   background-color: #3E3E3E;
+  color: #FFFFFF;
 }
 
 .individualNoteTitle {
   overflow: hidden;
-  margin-top: 25px;
+  margin-top: 5px;
   margin-left: 15px;
-  font-size: 19px;
+  font-size: 20px;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.individualNoteTitle:active {
-  color: #FFFFFF;
 }
 
 .individualNoteContent {
@@ -131,15 +135,9 @@ textarea {
   margin-top: 5px;
   margin-left: 15px;
   padding-bottom: 15px;
-  font-size: 11px;
+  font-size: 13px;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.individualNoteContent:active {
-  color: #FFFFFF;
-}
 
-.individualNote:active .noteTitle, .individualNote:active .noteContent {
-  color: #FFFFFF;
-}

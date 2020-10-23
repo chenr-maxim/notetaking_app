@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 let notes = [];
 
@@ -8,6 +9,8 @@ class NoteInterface extends React.Component {
         this.state = {
             noteTitle: '',
             noteContent: '',
+            lastEditTime: '',
+            divToFocus: '',
             emptyFlag: true,
         };
     }
@@ -21,14 +24,19 @@ class NoteInterface extends React.Component {
     }
 
     changeNote = (i) => {
-        console.log(this.state);
         return() => {
-            this.setState({noteTitle: notes[i].noteTitle, noteContent: notes[i].noteContent});
+            this.setState({noteTitle: notes[i].noteTitle, noteContent: notes[i].noteContent, divToFocus: notes[i]});
         }
     }
 
-    updateNotes = () => {
-        notes.push(this.state);
+    lastEditTime = () => {
+        const currentTime = moment().format("MMMM Do. h:mma");
+        this.setState({lastEditTime: currentTime});
+    }
+
+    updateNotes =  async() => {
+        await this.lastEditTime();
+        notes.unshift(this.state);
         localStorage.setItem('notes', JSON.stringify(notes));
         this.setState({emptyFlag: false});
     }
@@ -76,10 +84,6 @@ class NoteInterface extends React.Component {
         }
     }
 
-    checkState = () => {
-        console.log(this.state);
-    }
-
     fetchNotes = () => {
         if(localStorage.getItem('notes')) {
             console.log('we got the notes from localStorage');
@@ -99,7 +103,9 @@ class NoteInterface extends React.Component {
     }
 
     createNote = () => {
-        this.setState({noteTitle: '', noteContent: ''});
+        this.setState({ noteTitle: '', noteContent: ''}, () => {
+            this.lastEditTime();
+        });
     }
 
     clearNotes = () => {
@@ -137,7 +143,10 @@ class NoteInterface extends React.Component {
                     <hr className="solid"></hr>
                     <div className="savedNotes">
                         { !(this.state.emptyFlag) ? notes.map((note, i) => {
-                            return <div onClick={this.changeNote(i)} id={i} className={'individualNote'} key={i}> 
+                            return <div onClick={this.changeNote(i)} className={this.state.divToFocus === note[i] ? 'activeNote' : 'individualNote'} key={i}>
+                                <div className="timeStamp">
+                                    {note.lastEditTime}
+                                </div> 
                                 <div className="individualNoteTitle">
                                     {note.noteTitle}
                                 </div>
@@ -146,6 +155,7 @@ class NoteInterface extends React.Component {
                                 </div>
                             </div>}) : false}
                     </div>
+                    <button onClick={this.clearNotes}> Clear Notes </button>
                 </div>
 
 
@@ -154,7 +164,7 @@ class NoteInterface extends React.Component {
                     <button onClick={this.saveNote}> Save Note </button>
                     <button className="deleteIcon" onClick={this.deleteNote}>
                         <svg id="trash" xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 19 19">
-                        <path id="Path_1347" data-name="Path 1347" d="M17,5V4a2,2,0,0,0-2-2H9A2,2,0,0,0,7,4V5H4A1,1,0,0,0,4,7H5V18a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V7h1a1,1,0,0,0,0-2ZM15,4H9V5h6Zm2,3H7V18a1,1,0,0,0,1,1h8a1,1,0,0,0,1-1Z" transform="translate(-3 -2)" fill="#2699fb" fill-rule="evenodd"/>
+                        <path id="Path_1347" data-name="Path 1347" d="M17,5V4a2,2,0,0,0-2-2H9A2,2,0,0,0,7,4V5H4A1,1,0,0,0,4,7H5V18a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V7h1a1,1,0,0,0,0-2ZM15,4H9V5h6Zm2,3H7V18a1,1,0,0,0,1,1h8a1,1,0,0,0,1-1Z" transform="translate(-3 -2)" fill="#2699fb" fillRule="evenodd"/>
                         <path id="Path_1348" data-name="Path 1348" d="M9,9h2v8H9Z" transform="translate(-3 -2)" fill="#2699fb"/>
                         <path id="Path_1349" data-name="Path 1349" d="M13,9h2v8H13Z" transform="translate(-3 -2)" fill="#2699fb"/>
                         </svg>
