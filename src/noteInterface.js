@@ -25,7 +25,7 @@ class NoteInterface extends React.Component {
 
     changeNote = (i) => {
         return() => {
-            this.setState({noteTitle: notes[i].noteTitle, noteContent: notes[i].noteContent, divToFocus: notes[i]});
+            this.setState({noteTitle: notes[i].noteTitle, noteContent: notes[i].noteContent, divToFocus: i});
         }
     }
 
@@ -151,7 +151,7 @@ class NoteInterface extends React.Component {
                     <hr className="solid"></hr>
                     <div className="savedNotes">
                         { !(this.state.emptyFlag) ? notes.map((note, i) => {
-                            return <div onClick={this.changeNote(i)} className={this.state.divToFocus === note[i] ? 'activeNote' : 'individualNote'} key={i}>
+                            return <div onClick={this.changeNote(i)} className={this.state.divToFocus === i ? 'individualNote activeNote' : 'individualNote'} key={i}>
                                 <div className="timeStamp">
                                     {note.lastEditTime}
                                 </div> 
@@ -164,13 +164,18 @@ class NoteInterface extends React.Component {
                             </div>}) : false}
                     </div>
                     {/* <button onClick={this.clearNotes}> Clear Notes </button> */}
-                    <button onClick={this.checkState}> Check State </button>
+                    {/* <button onClick={this.checkState}> Check State </button> */}
                 </div>
 
 
                 <div className="noteEditor">
                     <input type="text" placeholder="Enter a Title" value={this.state.noteTitle || ""} className="noteTitle" name="noteTitle" onChange={this.handleChange} />
-                    <button onClick={this.saveNote}> Save Note </button>
+                    <button className="saveIcon" onClick={this.saveNote}>
+                        <svg id="software-download" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                        <path id="Path_1231" data-name="Path 1231" d="M11,5a1,1,0,0,1,2,0v7.158l3.243-3.243,1.414,1.414L12,15.986,6.343,10.329,7.757,8.915,11,12.158Z" transform="translate(-4 -4)"/>
+                        <path id="Path_1232" data-name="Path 1232" d="M4,14H6v4H18V14h2v4a2,2,0,0,1-2,2H6a2,2,0,0,1-2-2Z" transform="translate(-4 -4)"/>
+                        </svg>
+                    </button>
                     <button className="deleteIcon" onClick={this.deleteNote}>
                         <svg id="trash" xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 19 19">
                         <path id="Path_1347" data-name="Path 1347" d="M17,5V4a2,2,0,0,0-2-2H9A2,2,0,0,0,7,4V5H4A1,1,0,0,0,4,7H5V18a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V7h1a1,1,0,0,0,0-2ZM15,4H9V5h6Zm2,3H7V18a1,1,0,0,0,1,1h8a1,1,0,0,0,1-1Z" transform="translate(-3 -2)" fill="#2699fb" fillRule="evenodd"/>

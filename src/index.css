@@ -54,9 +54,15 @@ textarea {
 }
 
 .noteTitle {
+  font-size: 28px;
+  width: 800px;
+  height: 80px; 
+  word-wrap: break-word;
+  width: 500px;
   margin-left: 155px;
   margin-top: 50px;
   border-style: none;
+  outline: none;
 }
 
 .searchBarContainer {
@@ -83,6 +89,11 @@ textarea {
   width: 23px;
   height: 23px;
   background-color: #FFFFFF;
+}
+
+.saveIcon {
+  border: none;
+  background: none;
 }
 
 .deleteIcon {
