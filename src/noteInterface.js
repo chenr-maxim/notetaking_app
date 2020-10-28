@@ -1,5 +1,7 @@
 import React from 'react';
 import moment from 'moment';
+import {Editor, EditorState } from 'draft-js';
+
 
 let notes = [];
 
@@ -12,7 +14,10 @@ class NoteInterface extends React.Component {
             lastEditTime: '',
             divToFocus: '',
             emptyFlag: true,
+            editorState: EditorState.createEmpty(),
         };
+        this.onChange = editorState => this.setState({editorState});
+
     }
 
     componentDidMount() {
@@ -23,20 +28,56 @@ class NoteInterface extends React.Component {
         this.setState({[event.target.name]: event.target.value});
     }
 
+    createNewEditorState = () => {
+
+    }
+    
+
     changeNote = (i) => {
+        const {noteTitle, noteContent, noteCurrentContent} = notes[i];
+        console.log(noteCurrentContent);
+        // const newEditorState = EditorState.createWithContent(noteCurrentContent);
+        // const currentEditorState = this.state.editorState;
+        // const blockTree = currentEditorState.getBlockTree();
+        // const newEditorState = EditorState.createEmpty();
+        // console.log(newEditorState);
+        console.log(this.state.editorState);
+        const newEditorState = EditorState.push(this.state.editorState, noteCurrentContent, 'change-block-data');
         return() => {
-            this.setState({noteTitle: notes[i].noteTitle, noteContent: notes[i].noteContent, divToFocus: i});
+            this.setState({noteTitle, noteContent, divToFocus: i, 
+                editorState: newEditorState
+            });
         }
     }
 
     lastEditTime = () => {
         const currentTime = moment().format("MMMM Do. h:mma");
-        this.setState({lastEditTime: currentTime});
+        const noteCurrentContent = this.state.editorState.getCurrentContent();
+        // console.log(noteCurrentContent);
+        const noteText = noteCurrentContent.getPlainText('\u0001');
+        // console.log(hasText(noteCurrentContent));
+        // const noteText = getPlainText(noteCurrentContent);
+        // const rawData = convertToRaw(noteCurrentContent);
+        // console.log(rawData);
+        this.setState(oldState => ({
+            lastEditTime: currentTime, noteContent: noteText, noteCurrentContent: noteCurrentContent
+        }));
     }
 
     updateNotes =  async() => {
         await this.lastEditTime();
-        notes.unshift(this.state);
+        var noteObject = {
+            noteTitle: this.state.noteTitle,
+            noteContent: this.state.noteContent, 
+            noteCurrentContent: this.state.noteCurrentContent,
+            lastEditTime: this.state.lastEditTime, 
+            divToFocus: this.state.divToFocus, 
+            emptyFlag: this.state.emptyFlag
+        }; 
+
+        console.log(this.state);
+
+        notes.unshift(noteObject);
         localStorage.setItem('notes', JSON.stringify(notes));
         this.setState({emptyFlag: false});
     }
@@ -71,7 +112,6 @@ class NoteInterface extends React.Component {
                     alert('enter a note title to save!');
                 }
             }
-
             //notes !=== length 0
             //notes is not empty
             if(notes.length !== 0) {
@@ -93,9 +133,13 @@ class NoteInterface extends React.Component {
             console.log('we got the notes from localStorage');
             var retrievedNotes = localStorage.getItem('notes');
             var parsedNotes = JSON.parse(retrievedNotes);
+
+            console.log(parsedNotes);
+
             notes = parsedNotes;
             if( notes.length !== 0) {
-                this.setState({noteTitle: notes[0].noteTitle, noteContent: notes[0].noteContent, emptyFlag: false});
+                this.setState({noteTitle: notes[0].noteTitle, noteContent: notes[0].noteContent, emptyFlag: false, editorState: EditorState.createEmpty()
+ });
             }
             // console.log('componentDidMount Notes exist in localStorage');
             // console.log(parsedNotes);
@@ -151,7 +195,7 @@ class NoteInterface extends React.Component {
                     <hr className="solid"></hr>
                     <div className="savedNotes">
                         { !(this.state.emptyFlag) ? notes.map((note, i) => {
-                            return <div onClick={this.changeNote(i)} className={this.state.divToFocus === i ? 'individualNote activeNote' : 'individualNote'} key={i}>
+                            return (<div onClick={this.changeNote(i)} className={this.state.divToFocus === i ? 'individualNote activeNote' : 'individualNote'} key={i}>
                                 <div className="timeStamp">
                                     {note.lastEditTime}
                                 </div> 
@@ -161,10 +205,10 @@ class NoteInterface extends React.Component {
                                 <div className="individualNoteContent">
                                     {note.noteContent}
                                 </div>
-                            </div>}) : false}
+                            </div>)}) : false}
                     </div>
-                    {/* <button onClick={this.clearNotes}> Clear Notes </button> */}
-                    {/* <button onClick={this.checkState}> Check State </button> */}
+                    <button onClick={this.clearNotes}> Clear Notes </button>
+                    <button onClick={this.checkState}> Check State </button>
                 </div>
 
 
@@ -183,7 +227,8 @@ class NoteInterface extends React.Component {
                         <path id="Path_1349" data-name="Path 1349" d="M13,9h2v8H13Z" transform="translate(-3 -2)" fill="#2699fb"/>
                         </svg>
                     </button>
-                    <textarea autoFocus name="noteContent" value={this.state.noteContent || ""} placeholder="Start typing here!"  rows="20" cols="50" required onChange={this.handleChange} ></textarea> 
+                    <Editor placeholder='Begin typing here' editorState={this.state.editorState} onChange={this.onChange} />
+                    {/* <textarea autoFocus name="noteContent" value={this.state.noteContent || ""} placeholder="Start typing here!"  rows="20" cols="50" required onChange={this.handleChange} ></textarea>  */}
                 </div>          
             </div>
             
