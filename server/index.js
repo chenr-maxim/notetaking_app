@@ -6,9 +6,6 @@ const cors = require('cors')
 const db = require('./db')
 const notesRouter = require('./routes/notesRouter')
 
-const myMongoUrl = require('./db/credentials');
-
-
 const app = express()
 const apiPort = 5000
 
