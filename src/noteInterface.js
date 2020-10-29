@@ -28,13 +28,9 @@ class NoteInterface extends React.Component {
         this.setState({[event.target.name]: event.target.value});
     }
 
-    createNewEditorState = () => {
-
-    }
-    
-
     changeNote = (i) => {
         const {noteTitle, noteContent, noteCurrentContent} = notes[i];
+        // const CurrentEditorState = this.state.editorState;
         console.log(noteCurrentContent);
         // const newEditorState = EditorState.createWithContent(noteCurrentContent);
         // const currentEditorState = this.state.editorState;
@@ -42,10 +38,10 @@ class NoteInterface extends React.Component {
         // const newEditorState = EditorState.createEmpty();
         // console.log(newEditorState);
         console.log(this.state.editorState);
-        const newEditorState = EditorState.push(this.state.editorState, noteCurrentContent, 'change-block-data');
+        // const newEditorState = EditorState.push(CurrentEditorState, noteCurrentContent, 'change-block-data');
         return() => {
             this.setState({noteTitle, noteContent, divToFocus: i, 
-                editorState: newEditorState
+                // editorState: newEditorState
             });
         }
     }
