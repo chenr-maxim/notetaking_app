@@ -35,42 +35,43 @@ router.post('/notes', (req, res,) => {
         });
 });
 
-// router.put('/notes/:id', (req, res) => {
-//     const body = req.body
+router.put('/notes/:id', (req, res) => {
+    const body = req.body
 
-//     if (!body) {
-//         return res.status(400).json({
-//             success: false,
-//             error: 'You must provide a body to update',
-//         })
-//     }
-//     Note.findOne({ _id: req.params.id }, (err, notes) => {
-//         if (err) {
-//             return res.status(404).json({
-//                 err,
-//                 message: 'Note not found!',
-//             })
-//         }
-//         notes.name = body.name
-//         notes.time = body.time
-//         notes.rating = body.rating
-//         notes
-//             .save()
-//             .then(() => {
-//                 return res.status(200).json({
-//                     success: true,
-//                     id: notes._id,
-//                     message: 'Note updated!',
-//                 })
-//             })
-//             .catch(error => {
-//                 return res.status(404).json({
-//                     error,
-//                     message: 'Note not updated!',
-//                 })
-//             })
-//     })
-// })  
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+    Note.findOne({ _id: req.params.id }, (err, notes) => {
+        console.log(notes);
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Note not found!',
+            })
+        }
+        notes.title = body.title;
+        notes.lastEditTime = body.lastEditTime;
+        notes.content = body.content;
+        notes
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    id: notes._id,
+                    message: 'Note updated!',
+                })
+            })
+            .catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: 'Note not updated!',
+                })
+            })
+    })
+})  
 
 router.delete('/notes/:id', (req, res, next) => {
     Note.findOneAndDelete({"_id": req.params.id})
