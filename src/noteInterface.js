@@ -1,5 +1,7 @@
 import React from 'react';
 import moment from 'moment';
+
+import api from './api/index.js'
 import {Editor, EditorState } from 'draft-js';
 
 
@@ -9,10 +11,12 @@ class NoteInterface extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            dbNotes: [],
             noteTitle: '',
             noteContent: '',
             lastEditTime: '',
             divToFocus: '',
+            // contentState:'',
             emptyFlag: true,
             editorState: EditorState.createEmpty(),
         };
@@ -22,6 +26,7 @@ class NoteInterface extends React.Component {
 
     componentDidMount() {
         this.fetchNotes();
+        this.fetchDBNotes();
     }
 
     handleChange = (event) => {
@@ -29,15 +34,17 @@ class NoteInterface extends React.Component {
     }
 
     changeNote = (i) => {
-        const {noteTitle, noteContent, noteCurrentContent} = notes[i];
+        const {noteTitle, noteContent, 
+            // noteCurrentContent
+        } = notes[i];
         // const CurrentEditorState = this.state.editorState;
-        console.log(noteCurrentContent);
+        // console.log(noteCurrentContent);
         // const newEditorState = EditorState.createWithContent(noteCurrentContent);
         // const currentEditorState = this.state.editorState;
         // const blockTree = currentEditorState.getBlockTree();
         // const newEditorState = EditorState.createEmpty();
         // console.log(newEditorState);
-        console.log(this.state.editorState);
+        // console.log(this.state.editorState);
         // const newEditorState = EditorState.push(CurrentEditorState, noteCurrentContent, 'change-block-data');
         return() => {
             this.setState({noteTitle, noteContent, divToFocus: i, 
@@ -71,7 +78,7 @@ class NoteInterface extends React.Component {
             emptyFlag: this.state.emptyFlag
         }; 
 
-        console.log(this.state);
+        // console.log(this.state);
 
         notes.unshift(noteObject);
         localStorage.setItem('notes', JSON.stringify(notes));
@@ -135,7 +142,7 @@ class NoteInterface extends React.Component {
             notes = parsedNotes;
             if( notes.length !== 0) {
                 this.setState({noteTitle: notes[0].noteTitle, noteContent: notes[0].noteContent, emptyFlag: false, editorState: EditorState.createEmpty()
- });
+            });
             }
             // console.log('componentDidMount Notes exist in localStorage');
             // console.log(parsedNotes);
@@ -144,6 +151,26 @@ class NoteInterface extends React.Component {
         } else {
             console.log('empty localstorage');
         }
+    }
+
+    fetchDBNotes = async () => {
+        await api.getNote().then(notes => {
+            console.log('fetched db notes');
+            console.log(notes.data.data);
+            this.setState({
+                dbNotes: notes.data.data
+            })
+        })
+    }
+
+    createDBNote =  async () => {
+        const { noteTitle, lastEditTime, noteContent,
+            // contentState
+        } = this.state;
+        const payload = {noteTitle, lastEditTime, noteContent};
+        await api.addNote(payload).then(res => {
+            console.log('Note inserted into DB');
+        })
     }
 
     createNote = () => {
@@ -188,6 +215,7 @@ class NoteInterface extends React.Component {
                         </g>
                         </svg>
                     </button>
+                    {/* <button className="createIcon" onClick={this.createNote}> create DB Note </button> */}
                     <hr className="solid"></hr>
                     <div className="savedNotes">
                         { !(this.state.emptyFlag) ? notes.map((note, i) => {

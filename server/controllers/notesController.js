@@ -1,9 +1,6 @@
-const express = require('express');
 const Note = require('../models/note-model');
 
-const router = express.Router();
-
-router.get('/notes', (req, res, next) => {
+const getNote = (req,res) => {
     Note.find({}, (err, notes) => {
         if(err){
             return res.status(400).json({ success:false, error:err})
@@ -14,9 +11,10 @@ router.get('/notes', (req, res, next) => {
         return res.status(200).json({ success:true, data:notes})
     })
     .catch(err => console.log(err))
-})
+}
 
-router.post('/notes', (req, res,) => {
+
+const createNote = (req,res) => {
     const newNote = new Note({
         title: req.body.title,
         content: req.body.content,
@@ -33,9 +31,8 @@ router.post('/notes', (req, res,) => {
             console.log(err);
             res.json(err);
         });
-});
-
-router.put('/notes/:id', (req, res) => {
+}
+const updateNote = async (req, res) => {
     const body = req.body
 
     if (!body) {
@@ -71,17 +68,20 @@ router.put('/notes/:id', (req, res) => {
                 })
             })
     })
-})  
+}
 
-router.delete('/notes/:id', (req, res, next) => {
+const deleteNote = async (req,res,next) => {
     Note.findOneAndDelete({"_id": req.params.id})
     .then(data => {
         // console.log(`successfully deleted: ${res.json(data.title)} `);
         res.json(data);
     })
     .catch(next)
-})
+}
 
-
-
-module.exports = router;
+module.exports = {
+    getNote,
+    createNote,
+    updateNote,
+    deleteNote,
+}

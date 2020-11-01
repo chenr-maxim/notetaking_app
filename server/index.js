@@ -1,10 +1,9 @@
-
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const db = require('./db')
-const notesRouter = require('./routes/notesRouter')
+const notesRouter = require('./router/noteRouter')
 
 const app = express()
 const apiPort = 5000
