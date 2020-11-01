@@ -16,8 +16,8 @@ const getNote = (req,res) => {
 
 const createNote = (req,res) => {
     const newNote = new Note({
-        title: req.body.title,
-        content: req.body.content,
+        title: req.body.noteTitle,
+        content: req.body.noteContent,
         // contentState: req.body.contentState,
         lastEditTime: req.body.lastEditTime
     });

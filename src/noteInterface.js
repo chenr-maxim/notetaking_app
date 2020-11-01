@@ -12,6 +12,7 @@ class NoteInterface extends React.Component {
         super(props);
         this.state = {
             dbNotes: [],
+            noteId: '',
             noteTitle: '',
             noteContent: '',
             lastEditTime: '',
@@ -170,6 +171,7 @@ class NoteInterface extends React.Component {
         const payload = {noteTitle, lastEditTime, noteContent};
         await api.addNote(payload).then(res => {
             console.log('Note inserted into DB');
+            console.log(payload);
         })
     }
 
@@ -177,6 +179,22 @@ class NoteInterface extends React.Component {
         this.setState({ noteTitle: '', noteContent: ''}, () => {
             this.lastEditTime();
         });
+    }
+
+    updateDBNote = async (i) => {
+        // const {id} = notes[i]._id;
+        const { noteTitle, lastEditTime, noteContent } = this.state;
+        const payload = {noteTitle, lastEditTime, noteContent}
+        await api.updateNote(
+            // id, 
+            payload).then(res => {
+            console.log('update db notes');
+
+        })
+    }
+
+    deleteDBNote = () => {
+
     }
 
     checkState = () => {
@@ -215,7 +233,7 @@ class NoteInterface extends React.Component {
                         </g>
                         </svg>
                     </button>
-                    {/* <button className="createIcon" onClick={this.createNote}> create DB Note </button> */}
+                    <button onClick={this.createDBNote}> create DB Note </button>
                     <hr className="solid"></hr>
                     <div className="savedNotes">
                         { !(this.state.emptyFlag) ? notes.map((note, i) => {
