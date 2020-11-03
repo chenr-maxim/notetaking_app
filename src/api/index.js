@@ -4,8 +4,11 @@ const api = axios.create({
     baseURL: 'http://localhost:5000/api',
 })
 
-// export const getUserById = (id, payload) => api.get(`/users/${id}`, payload)
-// export const createUser = (payload) => api.post
+export const createUser = (payload) => api.post(`user`)
+export const getUserById = (id) => api.get(`/user/${id}`)
+export const updateUser = (id, payload) => api.put(`/user/${id}`, payload)
+export const deleteUser = (id) => api.delete(`/user/${id}`)
+
 
 export const addNote = (payload) => api.post(`/notes`, payload)
 export const getNote = () => api.get(`/notes`)
@@ -16,7 +19,11 @@ const apis = {
     addNote,
     getNote,
     updateNote,
-    deleteNote
+    deleteNote,
+    createUser,
+    getUserById,
+    updateUser,
+    deleteUser,
 }
 
 export default apis

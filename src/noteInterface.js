@@ -15,6 +15,7 @@ class NoteInterface extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentUser: '',
             dbNotes: [],
             noteId: '',
             noteTitle: '',
@@ -166,6 +167,13 @@ class NoteInterface extends React.Component {
                 dbNotes: notes.data.data
             })
         })
+        // await api.getUserById().then(user => {
+        //     console.log('fetching db user');
+        //     console.log(user.data.data);
+        //     this.setState({
+        //         currentUser: user.data.data
+        //     })
+        // })
     }
 
     createDBNote =  async () => {
