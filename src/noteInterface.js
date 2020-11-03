@@ -7,6 +7,10 @@ import {Editor, EditorState } from 'draft-js';
 
 let notes = [];
 
+//what to continue -> refactor the code so that we can pull from dbNotes [array]
+//properly display all the notes first and then we can figure out handling the ids
+//after everything is working we can focus on using the draft-js api
+
 class NoteInterface extends React.Component {    
     constructor(props) {
         super(props);
