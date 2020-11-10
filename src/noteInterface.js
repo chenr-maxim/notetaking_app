@@ -15,8 +15,9 @@ class NoteInterface extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            username: '',
             currentUser: '',
-            dbNotes: [],
+            userData: [],
             noteId: '',
             noteTitle: '',
             noteContent: '',
@@ -32,11 +33,13 @@ class NoteInterface extends React.Component {
 
     componentDidMount() {
         this.fetchNotes();
-        this.fetchDBNotes();
+        // this.fetchDBNotes();
     }
 
     handleChange = (event) => {
+        console.log(event.target.value);
         this.setState({[event.target.name]: event.target.value});
+        console.log(this.state);
     }
 
     changeNote = (i) => {
@@ -159,14 +162,14 @@ class NoteInterface extends React.Component {
         }
     }
 
-    fetchDBNotes = async () => {
-        await api.getNote().then(notes => {
-            console.log('fetched db notes');
-            console.log(notes.data.data);
-            this.setState({
-                dbNotes: notes.data.data
-            })
-        })
+    // fetchDBNotes = async () => {
+    //     await api.getNote().then(notes => {
+    //         console.log('fetched db notes');
+    //         console.log(notes.data.data);
+    //         this.setState({
+    //             dbNotes: notes.data.data
+    //         })
+    //     })
         // await api.getUserById().then(user => {
         //     console.log('fetching db user');
         //     console.log(user.data.data);
@@ -174,7 +177,7 @@ class NoteInterface extends React.Component {
         //         currentUser: user.data.data
         //     })
         // })
-    }
+    // }
 
     createDBNote =  async () => {
         const { noteTitle, lastEditTime, noteContent,
@@ -193,10 +196,23 @@ class NoteInterface extends React.Component {
         });
     }
 
+    getUserFromDB = async () => {
+        const username = this.state.username;
+        await api.getUser().then(res => {
+            for(let i = 0; i < res.data.data.length; i++) {
+                if((res.data.data)[i].username === username) {
+                    console.log('success');
+                    this.setState({userData: (res.data.data)[i]})
+                    return;
+                }
+            }
+        })
+    }
+
     updateDBNote = async (i) => {
         // const {id} = notes[i]._id;
         const { noteTitle, lastEditTime, noteContent } = this.state;
-        const payload = {noteTitle, lastEditTime, noteContent}
+        const payload = {noteTitle, lastEditTime, noteContent};
         await api.updateNote(
             // id, 
             payload).then(res => {
@@ -245,6 +261,8 @@ class NoteInterface extends React.Component {
                         </g>
                         </svg>
                     </button>
+                    <input type="text" placeholder="Enter a username" value={this.state.username} name="username" onChange={this.handleChange} />
+                    <button onClick={this.getUserFromDB}> get user from the DB </button>
                     <button onClick={this.createDBNote}> create DB Note </button>
                     <hr className="solid"></hr>
                     <div className="savedNotes">

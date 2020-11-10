@@ -8,7 +8,7 @@ const getUser = async (req,res) => {
         if(!users.length) {
             return res.status(404).json({success:false, error:err})
         }
-        return res.status(200).json({sucess:true, data:users})
+        return res.status(200).json({success:true, data:users})
     })
     .catch(err => console.log(err))
 }
@@ -27,6 +27,21 @@ const getUserById = async (req,res) => {
         return res.status(200).json({success: true, data: user})
     }).catch(err => console.log(err))
 }
+
+// const getUserByUsername = async (req,res) => {
+//     await User.find({username: req.params.username}, (err, user) => {
+//         if(err) {
+//             return res.status(400).json({success: false, error: err})
+//         }
+
+//         if(!user) {
+//             return res
+//                 .status(404)
+//                 .json({success:false, error: 'User not found'})
+//         }
+//         return res.status(202).json({success: true, data: user})
+//     }).catch(err => console.log(err))
+// }
 
 const createUser = async (req,res) => {
     const newUser = new User({
@@ -50,9 +65,6 @@ const createUser = async (req,res) => {
 }
 
 const updateUser = async (req,res) => {
-
-    console.log(req.body);
-
     const body = req.body
     if(!body) {
         return res.status(400).json({
@@ -105,6 +117,7 @@ const deleteUser = async (req,res,next) => {
 module.exports = {
     getUserById,
     getUser,
+    // getUserByUsername,
     updateUser,
     deleteUser,
     createUser,
