@@ -3,11 +3,8 @@ const Schema = mongoose.Schema
 
 const userSchema = new Schema ({
     username: {type: 'String', required: true},
-    note: {
-        title: { type: String, required: true},
-        lastEditTime: { type: String, required: true},
-        content: { type: String, required: true},
-        // contentState: {type: Object, required: true}
+    notes: {
+        type: Array
     }
 });
 

@@ -28,29 +28,30 @@ const getUserById = async (req,res) => {
     }).catch(err => console.log(err))
 }
 
-// const getUserByUsername = async (req,res) => {
-//     await User.find({username: req.params.username}, (err, user) => {
-//         if(err) {
-//             return res.status(400).json({success: false, error: err})
-//         }
+const getUserByUsername = async (req,res) => {
+    await User.find({username: req.params.username}, (err, user) => {
+        if(err) {
+            return res.status(400).json({success: false, error: err})
+        }
 
-//         if(!user) {
-//             return res
-//                 .status(404)
-//                 .json({success:false, error: 'User not found'})
-//         }
-//         return res.status(202).json({success: true, data: user})
-//     }).catch(err => console.log(err))
-// }
+        if(!user) {
+            return res
+                .status(404)
+                .json({success:false, error: 'User not found'})
+        }
+        return res.status(202).json({success: true, data: user})
+    }).catch(err => console.log(err))
+}
 
 const createUser = async (req,res) => {
     const newUser = new User({
         username: req.body.username,
-        note: {
-            title: req.body.note.noteTitle,
-            content: req.body.note.noteContent,
-            // contentState: req.body.contentState,
-            lastEditTime: req.body.note.lastEditTime        }
+        notes: {
+            // title: req.body.note.noteTitle,
+            // content: req.body.note.noteContent,
+            // // contentState: req.body.contentState,
+            // lastEditTime: req.body.note.lastEditTime        
+        }
     });
 
     User.create(newUser)
@@ -84,11 +85,7 @@ const updateUser = async (req,res) => {
             })
         }
         user.username = body.username;
-        user.note = {
-            title: body.note.title,
-            lastEditTime: body.note.lastEditTime,
-            content: body.note.content, 
-        }
+        user.notes = body.userNotes;
         user.save()
             .then(() => {
                 return res.status(200).json({
@@ -117,7 +114,7 @@ const deleteUser = async (req,res,next) => {
 module.exports = {
     getUserById,
     getUser,
-    // getUserByUsername,
+    getUserByUsername,
     updateUser,
     deleteUser,
     createUser,

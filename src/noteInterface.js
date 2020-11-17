@@ -18,14 +18,12 @@ class NoteInterface extends React.Component {
             username: '',
             currentUser: '',
             userData: [],
-            noteId: '',
+            userNotes: [],
             noteTitle: '',
             noteContent: '',
-            lastEditTime: '',
             divToFocus: '',
-            // contentState:'',
             emptyFlag: true,
-            editorState: EditorState.createEmpty(),
+            // editorState: EditorState.createEmpty(),
         };
         this.onChange = editorState => this.setState({editorState});
 
@@ -33,65 +31,52 @@ class NoteInterface extends React.Component {
 
     componentDidMount() {
         this.fetchNotes();
-        // this.fetchDBNotes();
     }
 
     handleChange = (event) => {
-        console.log(event.target.value);
         this.setState({[event.target.name]: event.target.value});
-        console.log(this.state);
     }
 
     changeNote = (i) => {
-        const {noteTitle, noteContent, 
-            // noteCurrentContent
-        } = notes[i];
-        // const CurrentEditorState = this.state.editorState;
-        // console.log(noteCurrentContent);
-        // const newEditorState = EditorState.createWithContent(noteCurrentContent);
-        // const currentEditorState = this.state.editorState;
-        // const blockTree = currentEditorState.getBlockTree();
-        // const newEditorState = EditorState.createEmpty();
-        // console.log(newEditorState);
-        // console.log(this.state.editorState);
-        // const newEditorState = EditorState.push(CurrentEditorState, noteCurrentContent, 'change-block-data');
+        const {noteTitle, noteContent} = notes[i];
         return() => {
-            this.setState({noteTitle, noteContent, divToFocus: i, 
-                // editorState: newEditorState
-            });
+            this.setState({noteTitle, noteContent, divToFocus: i });
         }
     }
 
     lastEditTime = () => {
         const currentTime = moment().format("MMMM Do. h:mma");
-        const noteCurrentContent = this.state.editorState.getCurrentContent();
-        // console.log(noteCurrentContent);
-        const noteText = noteCurrentContent.getPlainText('\u0001');
-        // console.log(hasText(noteCurrentContent));
-        // const noteText = getPlainText(noteCurrentContent);
-        // const rawData = convertToRaw(noteCurrentContent);
-        // console.log(rawData);
-        this.setState(oldState => ({
-            lastEditTime: currentTime, noteContent: noteText, noteCurrentContent: noteCurrentContent
-        }));
+        this.setState(oldState => ({lastEditTime: currentTime}));
     }
 
     updateNotes =  async() => {
+        // await this.lastEditTime();
+        // var noteObject = {
+        //     noteTitle: this.state.noteTitle,
+        //     noteContent: this.state.noteContent, 
+        //     noteCurrentContent: this.state.noteCurrentContent,
+        //     lastEditTime: this.state.lastEditTime, 
+        //     divToFocus: this.state.divToFocus, 
+        //     emptyFlag: this.state.emptyFlag
+        // }; 
+        // notes.unshift(noteObject);
+        // localStorage.setItem('notes', JSON.stringify(notes));
+        // this.setState({emptyFlag: false});
+    }
+
+    addNewNote = async() => {
         await this.lastEditTime();
-        var noteObject = {
-            noteTitle: this.state.noteTitle,
-            noteContent: this.state.noteContent, 
-            noteCurrentContent: this.state.noteCurrentContent,
-            lastEditTime: this.state.lastEditTime, 
-            divToFocus: this.state.divToFocus, 
-            emptyFlag: this.state.emptyFlag
-        }; 
+        const note = {title: this.state.noteTitle, content: this.state.noteContent, lastEditTime: this.state.lastEditTime};
+        this.state.userData.notes.push(note);
+    }
 
-        // console.log(this.state);
-
-        notes.unshift(noteObject);
-        localStorage.setItem('notes', JSON.stringify(notes));
-        this.setState({emptyFlag: false});
+    updateUser = async() => {
+        const {_id, username} = this.state.userData;
+        const userNotes = this.state.userNotes;
+        const payload = {userNotes, username, _id};
+        await api.updateUser(_id, payload).then(res => {
+            console.log('updated user into DB');
+        })
     }
 
     deleteNote = () => {
@@ -162,34 +147,6 @@ class NoteInterface extends React.Component {
         }
     }
 
-    // fetchDBNotes = async () => {
-    //     await api.getNote().then(notes => {
-    //         console.log('fetched db notes');
-    //         console.log(notes.data.data);
-    //         this.setState({
-    //             dbNotes: notes.data.data
-    //         })
-    //     })
-        // await api.getUserById().then(user => {
-        //     console.log('fetching db user');
-        //     console.log(user.data.data);
-        //     this.setState({
-        //         currentUser: user.data.data
-        //     })
-        // })
-    // }
-
-    createDBNote =  async () => {
-        const { noteTitle, lastEditTime, noteContent,
-            // contentState
-        } = this.state;
-        const payload = {noteTitle, lastEditTime, noteContent};
-        await api.addNote(payload).then(res => {
-            console.log('Note inserted into DB');
-            console.log(payload);
-        })
-    }
-
     createNote = () => {
         this.setState({ noteTitle: '', noteContent: ''}, () => {
             this.lastEditTime();
@@ -202,29 +159,14 @@ class NoteInterface extends React.Component {
             for(let i = 0; i < res.data.data.length; i++) {
                 if((res.data.data)[i].username === username) {
                     console.log('success');
-                    this.setState({userData: (res.data.data)[i]})
+                    this.setState({userData: (res.data.data)[i], emptyFlag: false});
+                    this.setState({userNotes: this.state.userData.notes});
                     return;
                 }
             }
         })
     }
-
-    updateDBNote = async (i) => {
-        // const {id} = notes[i]._id;
-        const { noteTitle, lastEditTime, noteContent } = this.state;
-        const payload = {noteTitle, lastEditTime, noteContent};
-        await api.updateNote(
-            // id, 
-            payload).then(res => {
-            console.log('update db notes');
-
-        })
-    }
-
-    deleteDBNote = () => {
-
-    }
-
+    
     checkState = () => {
         console.log(this.state);
     }
@@ -263,21 +205,24 @@ class NoteInterface extends React.Component {
                     </button>
                     <input type="text" placeholder="Enter a username" value={this.state.username} name="username" onChange={this.handleChange} />
                     <button onClick={this.getUserFromDB}> get user from the DB </button>
-                    <button onClick={this.createDBNote}> create DB Note </button>
+                    <button onClick={this.updateUser}> update User </button>
                     <hr className="solid"></hr>
                     <div className="savedNotes">
-                        { !(this.state.emptyFlag) ? notes.map((note, i) => {
-                            return (<div onClick={this.changeNote(i)} className={this.state.divToFocus === i ? 'individualNote activeNote' : 'individualNote'} key={i}>
-                                <div className="timeStamp">
-                                    {note.lastEditTime}
-                                </div> 
-                                <div className="individualNoteTitle">
-                                    {note.noteTitle}
+                        {
+                            !(this.state.emptyFlag) ? this.state.userData.notes.map((note, i) => {
+                                return <div key={i}> 
+                                    <div className="timeStamp">
+                                        {note.lastEditTime}
+                                    </div>
+                                    <div className="individualNoteTitle">
+                                        {note.title}
+                                    </div>
+                                    <div className="individualNoteContent">
+                                        {note.content}
+                                    </div>
                                 </div>
-                                <div className="individualNoteContent">
-                                    {note.noteContent}
-                                </div>
-                            </div>)}) : false}
+                            }): false
+                        }
                     </div>
                     <button onClick={this.clearNotes}> Clear Notes </button>
                     <button onClick={this.checkState}> Check State </button>
@@ -286,7 +231,7 @@ class NoteInterface extends React.Component {
 
                 <div className="noteEditor">
                     <input type="text" placeholder="Enter a Title" value={this.state.noteTitle || ""} className="noteTitle" name="noteTitle" onChange={this.handleChange} />
-                    <button className="saveIcon" onClick={this.saveNote}>
+                    <button className="saveIcon" onClick={this.addNewNote}>
                         <svg id="software-download" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                         <path id="Path_1231" data-name="Path 1231" d="M11,5a1,1,0,0,1,2,0v7.158l3.243-3.243,1.414,1.414L12,15.986,6.343,10.329,7.757,8.915,11,12.158Z" transform="translate(-4 -4)"/>
                         <path id="Path_1232" data-name="Path 1232" d="M4,14H6v4H18V14h2v4a2,2,0,0,1-2,2H6a2,2,0,0,1-2-2Z" transform="translate(-4 -4)"/>
@@ -299,8 +244,8 @@ class NoteInterface extends React.Component {
                         <path id="Path_1349" data-name="Path 1349" d="M13,9h2v8H13Z" transform="translate(-3 -2)" fill="#2699fb"/>
                         </svg>
                     </button>
-                    <Editor placeholder='Begin typing here' editorState={this.state.editorState} onChange={this.onChange} />
-                    {/* <textarea autoFocus name="noteContent" value={this.state.noteContent || ""} placeholder="Start typing here!"  rows="20" cols="50" required onChange={this.handleChange} ></textarea>  */}
+                    {/* <Editor placeholder='Begin typing here' editorState={this.state.editorState} onChange={this.onChange} /> */}
+                    <textarea autoFocus name="noteContent" value={this.state.noteContent || ""} placeholder="Start typing here!"  rows="20" cols="50" required onChange={this.handleChange} ></textarea> 
                 </div>          
             </div>
             
