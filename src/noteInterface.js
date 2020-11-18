@@ -30,7 +30,6 @@ class NoteInterface extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchNotes();
     }
 
     handleChange = (event) => {
@@ -38,9 +37,13 @@ class NoteInterface extends React.Component {
     }
 
     changeNote = (i) => {
-        const {noteTitle, noteContent} = notes[i];
-        return() => {
-            this.setState({noteTitle, noteContent, divToFocus: i });
+        if(this.state.userNotes.length === 0) {
+            return;
+        } else {
+            const {noteTitle, noteContent} = this.state.userNotes[i];
+            return() => {
+                this.setState({noteTitle, noteContent, divToFocus: i });
+            }
         }
     }
 
@@ -49,25 +52,12 @@ class NoteInterface extends React.Component {
         this.setState(oldState => ({lastEditTime: currentTime}));
     }
 
-    updateNotes =  async() => {
-        // await this.lastEditTime();
-        // var noteObject = {
-        //     noteTitle: this.state.noteTitle,
-        //     noteContent: this.state.noteContent, 
-        //     noteCurrentContent: this.state.noteCurrentContent,
-        //     lastEditTime: this.state.lastEditTime, 
-        //     divToFocus: this.state.divToFocus, 
-        //     emptyFlag: this.state.emptyFlag
-        // }; 
-        // notes.unshift(noteObject);
-        // localStorage.setItem('notes', JSON.stringify(notes));
-        // this.setState({emptyFlag: false});
-    }
-
     addNewNote = async() => {
         await this.lastEditTime();
         const note = {title: this.state.noteTitle, content: this.state.noteContent, lastEditTime: this.state.lastEditTime};
         this.state.userData.notes.push(note);
+        this.updateUser();
+
     }
 
     updateUser = async() => {
@@ -77,22 +67,13 @@ class NoteInterface extends React.Component {
         await api.updateUser(_id, payload).then(res => {
             console.log('updated user into DB');
         })
+        this.forceUpdate();
     }
 
     deleteNote = () => {
-        const noteTitle = this.state.noteTitle;
-        for(let i = 0; i < notes.length; i++) {
-            if( notes[i].noteTitle === noteTitle) {
-                if(notes.length === 1) {
-                    notes.splice(i,1);
-                    this.setState({noteTitle: '', noteContent: ''});
-                    break;
-                }
-                this.setState({noteTitle: notes[i+1].noteTitle, noteContent: notes[i+1].noteContent});
-                notes.splice(i,1);
-            }
-        }
-        localStorage.setItem('notes', JSON.stringify(notes));
+        this.state.userNotes.splice(this.state.divToFocus, 1);
+        console.log(this.state.userNotes);
+        this.updateUser();
     }
 
     saveNote = () => {
@@ -122,28 +103,6 @@ class NoteInterface extends React.Component {
             }
         } else {
             alert('enter a title to save the note!');
-        }
-    }
-
-    fetchNotes = () => {
-        if(localStorage.getItem('notes')) {
-            console.log('we got the notes from localStorage');
-            var retrievedNotes = localStorage.getItem('notes');
-            var parsedNotes = JSON.parse(retrievedNotes);
-
-            console.log(parsedNotes);
-
-            notes = parsedNotes;
-            if( notes.length !== 0) {
-                this.setState({noteTitle: notes[0].noteTitle, noteContent: notes[0].noteContent, emptyFlag: false, editorState: EditorState.createEmpty()
-            });
-            }
-            // console.log('componentDidMount Notes exist in localStorage');
-            // console.log(parsedNotes);
-            // console.log('what is stored in localstorage?');
-            // console.log(localStorage);
-        } else {
-            console.log('empty localstorage');
         }
     }
 
@@ -210,7 +169,7 @@ class NoteInterface extends React.Component {
                     <div className="savedNotes">
                         {
                             !(this.state.emptyFlag) ? this.state.userData.notes.map((note, i) => {
-                                return <div key={i}> 
+                                return <div onClick={this.changeNote(i)} className={this.state.divToFocus === i ? 'individualNote activeNote': 'individualNote'} key={i}> 
                                     <div className="timeStamp">
                                         {note.lastEditTime}
                                     </div>
