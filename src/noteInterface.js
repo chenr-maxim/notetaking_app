@@ -2,10 +2,7 @@ import React from 'react';
 import moment from 'moment';
 
 import api from './api/index.js'
-import {Editor, EditorState } from 'draft-js';
-
-
-let notes = [];
+import {Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 
 //what to continue -> refactor the code so that we can pull from dbNotes [array]
 //properly display all the notes first and then we can figure out handling the ids
@@ -16,14 +13,14 @@ class NoteInterface extends React.Component {
         super(props);
         this.state = {
             username: '',
-            currentUser: '',
+            rawContentStateData: '',
             userData: [],
             userNotes: [],
             noteTitle: '',
             noteContent: '',
             divToFocus: '',
             emptyFlag: true,
-            // editorState: EditorState.createEmpty(),
+            editorState: EditorState.createEmpty(),
         };
         this.onChange = editorState => this.setState({editorState});
 
@@ -54,7 +51,13 @@ class NoteInterface extends React.Component {
 
     addNewNote = async() => {
         await this.lastEditTime();
-        const note = {title: this.state.noteTitle, content: this.state.noteContent, lastEditTime: this.state.lastEditTime};
+        await this.convertToRawData();
+        const note = {
+            title: this.state.noteTitle, 
+            content: this.state.noteContent, 
+            lastEditTime: this.state.lastEditTime,
+            rawContentStateData: this.state.rawContentStateData
+        };
         this.state.userData.notes.push(note);
         this.updateUser();
 
@@ -76,35 +79,35 @@ class NoteInterface extends React.Component {
         this.updateUser();
     }
 
-    saveNote = () => {
-        if(this.state.noteTitle.trim() !== '') {
-            //notes === length 0
-            //notes is empty
-            //base case
-            if(notes.length === 0) {
-                if(this.state.noteTitle.trim() !== '') {
-                    this.updateNotes();
-                    return;
-                }
-                else {
-                    alert('enter a note title to save!');
-                }
-            }
-            //notes !=== length 0
-            //notes is not empty
-            if(notes.length !== 0) {
-                for(let i = 0; i < notes.length; i++) {
-                    if(notes[i].noteTitle === this.state.noteTitle.trim()) {
-                        notes.splice(i, 1);
-                        break;
-                    } 
-                }
-                this.updateNotes();
-            }
-        } else {
-            alert('enter a title to save the note!');
-        }
-    }
+    // saveNote = () => {
+    //     if(this.state.noteTitle.trim() !== '') {
+    //         //notes === length 0
+    //         //notes is empty
+    //         //base case
+    //         if(notes.length === 0) {
+    //             if(this.state.noteTitle.trim() !== '') {
+    //                 this.updateNotes();
+    //                 return;
+    //             }
+    //             else {
+    //                 alert('enter a note title to save!');
+    //             }
+    //         }
+    //         //notes !=== length 0
+    //         //notes is not empty
+    //         if(notes.length !== 0) {
+    //             for(let i = 0; i < notes.length; i++) {
+    //                 if(notes[i].noteTitle === this.state.noteTitle.trim()) {
+    //                     notes.splice(i, 1);
+    //                     break;
+    //                 } 
+    //             }
+    //             this.updateNotes();
+    //         }
+    //     } else {
+    //         alert('enter a title to save the note!');
+    //     }
+    // }
 
     createNote = () => {
         this.setState({ noteTitle: '', noteContent: ''}, () => {
@@ -130,10 +133,18 @@ class NoteInterface extends React.Component {
         console.log(this.state);
     }
 
-    clearNotes = () => {
-        localStorage.clear();
-        notes = [];
-        this.setState({noteTitle: '', noteContent: '', emptyFlag: true});
+    convertToRawData = () => {
+        const contentState = this.state.editorState.getCurrentContent();
+        var RawState = convertToRaw(contentState);
+        this.setState({rawContentStateData: RawState});
+    }
+
+    convertFromRawMethod = () => {
+        const rawData = this.state.rawContentStateData;
+        var convertedData =convertFromRaw(rawData);
+        console.log(convertedData);
+        let text = convertedData.getPlainText();
+        console.log(text);
     }
 
     render() {
@@ -165,6 +176,9 @@ class NoteInterface extends React.Component {
                     <input type="text" placeholder="Enter a username" value={this.state.username} name="username" onChange={this.handleChange} />
                     <button onClick={this.getUserFromDB}> get user from the DB </button>
                     <button onClick={this.updateUser}> update User </button>
+                    <button onClick={this.convertToRawData}> content state </button>
+                    <button onClick={this.convertFromRawMethod}> convert from raw </button>
+
                     <hr className="solid"></hr>
                     <div className="savedNotes">
                         {
@@ -183,7 +197,6 @@ class NoteInterface extends React.Component {
                             }): false
                         }
                     </div>
-                    <button onClick={this.clearNotes}> Clear Notes </button>
                     <button onClick={this.checkState}> Check State </button>
                 </div>
 
@@ -203,7 +216,7 @@ class NoteInterface extends React.Component {
                         <path id="Path_1349" data-name="Path 1349" d="M13,9h2v8H13Z" transform="translate(-3 -2)" fill="#2699fb"/>
                         </svg>
                     </button>
-                    {/* <Editor placeholder='Begin typing here' editorState={this.state.editorState} onChange={this.onChange} /> */}
+                    <Editor placeholder='Begin typing here' editorState={this.state.editorState} onChange={this.onChange} />
                     <textarea autoFocus name="noteContent" value={this.state.noteContent || ""} placeholder="Start typing here!"  rows="20" cols="50" required onChange={this.handleChange} ></textarea> 
                 </div>          
             </div>
