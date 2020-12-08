@@ -1,4 +1,7 @@
 const User = require('../models/user-model');
+const bcrypt = require('bcryptjs');
+// const { ExtractJwt } = require('passport-jwt');
+const jwt = require('jsonwebtoken');
 
 const getUser = async (req,res) => {
     User.find({}, (err,users) => {
@@ -111,6 +114,89 @@ const deleteUser = async (req,res,next) => {
     .catch(next)
 }
 
+const signupUser = async (req,res) => {
+  User.findOne({ username: req.body.username}).then((user) => {
+    if(user) {
+      console.log('user name is already being used');
+      return res.status(400).json({user, message: 'username is already in use'});
+    } else {
+      const newUser = new User({
+        username: req.body.username,
+        password: req.body.password,
+      });
+
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(newUser.password, salt, (err, hash) => {
+          if(err) throw err;
+          newUser.password = hash;
+          newUser
+            .save()
+            .then((user) => {
+              const payload = {
+                id: user.id,
+                username: user.username,
+              };
+
+              jwt.sign(
+                payload,
+                'testkey',
+                {expiresIn: 36000},
+                (err, token) => {
+                  console.log(res);
+                  res.json({
+                    success:true,
+                    token: "Bearer " + token,
+                    username: user.username,
+                    id: user.id,
+                  })
+                }
+              )
+            });
+        });
+      });
+    }
+  });
+};
+
+const loginUser = async (req,res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  User.findOne({username}).then((user) => {
+    if(!user) {
+      // console.log('username does not exist');
+      return res.status(400).json({user, message: 'username doesnt exist'});
+    }
+
+    bcrypt.compare(password, user.password).then((isMatching) => {
+      if(isMatching) {
+        const payload = {
+          id: user.id,
+          username: user.username
+        };
+
+        jwt.sign(
+          payload,
+          'testkey',
+          {expiresIn: 36000},
+          (err, token) => {
+            res.json({
+              success: true,
+              token: "Bearer " + token,
+              username: user.username,
+              id: user.id
+            });
+            console.log('successfully signed in');
+          }
+        );
+      } else {
+        console.log('incorrect password');
+        return res.status(400);
+      }
+    });
+  });
+}
+
 module.exports = {
     getUserById,
     getUser,
@@ -118,4 +204,6 @@ module.exports = {
     updateUser,
     deleteUser,
     createUser,
+    signupUser,
+    loginUser,
 }

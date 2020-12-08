@@ -21,10 +21,10 @@ const apis = {
     // getNote,
     // updateNote,
     // deleteNote,
+    // getUserByUsername,
     getUser,
     createUser,
     getUserById,
-    // getUserByUsername,
     updateUser,
     deleteUser,
 }

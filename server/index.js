@@ -2,11 +2,12 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
+const app = express()
+const apiPort = 5000
+
 const db = require('./db')
 const notesRouter = require('./router/noteRouter')
 
-const app = express()
-const apiPort = 5000
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
