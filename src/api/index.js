@@ -11,6 +11,9 @@ export const getUser = () => api.get(`/user`)
 export const updateUser = (id, payload) => api.put(`/user/${id}`, payload)
 export const deleteUser = (id) => api.delete(`/user/${id}`)
 
+export const login = (payload) => api.post(`/user/login`, payload)
+export const signup = (payload) => api.post(`/user/signup`, payload)
+
 // export const addNote = (payload) => api.post(`/notes`, payload)
 // export const getNote = () => api.get(`/notes`)
 // export const updateNote = (id, payload) => api.put(`/notes/${id}`, payload)
@@ -27,6 +30,8 @@ const apis = {
     getUserById,
     updateUser,
     deleteUser,
+    login,
+    signup
 }
 
 export default apis

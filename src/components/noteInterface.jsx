@@ -1,14 +1,11 @@
 import React from 'react';
 import moment from 'moment';
+import {logoutUser} from './util/auth_user';
 
-import api from './api/index.js'
+import api from '../api/index'
 import {Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 
-//what to continue -> refactor the code so that we can pull from dbNotes [array]
-//properly display all the notes first and then we can figure out handling the ids
-//after everything is working we can focus on using the draft-js api
-
-class NoteInterface extends React.Component {    
+export class NoteInterface extends React.Component {    
     constructor(props) {
         super(props);
         this.state = {
@@ -147,6 +144,10 @@ class NoteInterface extends React.Component {
         console.log(text);
     }
 
+    logout = () => {
+      logoutUser();
+    }
+
     render() {
         return (
             <div className="noteContainer">
@@ -173,11 +174,12 @@ class NoteInterface extends React.Component {
                         </g>
                         </svg>
                     </button>
-                    <input type="text" placeholder="Enter a username" value={this.state.username} name="username" onChange={this.handleChange} />
                     <button onClick={this.getUserFromDB}> get user from the DB </button>
                     <button onClick={this.updateUser}> update User </button>
                     <button onClick={this.convertToRawData}> content state </button>
                     <button onClick={this.convertFromRawMethod}> convert from raw </button>
+                    <button onClick={this.logout}> logout </button>
+
 
                     <hr className="solid"></hr>
                     <div className="savedNotes">
@@ -224,5 +226,3 @@ class NoteInterface extends React.Component {
         );
     }
 }
-
-export default NoteInterface;
